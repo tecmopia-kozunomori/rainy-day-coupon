@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>雨の日限定クーポン - テクモピア公津の杜</title>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00bcd4;
+            --primary-dark: #00838f;
+            --accent: #ff4081;
+            --accent-dark: #c2185b;
+            --text-color: #2c3e50;
+            --jp-font: 'M PLUS Rounded 1c', sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        
+        /* 🌧️ 奥行きのある雨空の背景 */
+        body {
+            font-family: var(--jp-font);
+            background: linear-gradient(to bottom, #141e30, #243b55);
+            margin: 0; padding: 0; color: var(--text-color);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; overflow-x: hidden;
+            user-select: none; -webkit-user-select: none;
+            position: relative;
+        }
+
+        /* ☔ 降り注ぐ雨 */
+        .rain-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            background-image: 
+                linear-gradient(to bottom, transparent 80%, rgba(255, 255, 255, 0.4) 100%),
+                linear-gradient(to bottom, transparent 80%, rgba(255, 255, 255, 0.2) 100%);
+            background-size: 2px 80px, 4px 120px;
+            background-position: 0 0, 20px 0;
+            animation: rainFall 0.7s linear infinite;
+        }
+        @keyframes rainFall { 0% { background-position: 0px 0px, 20px 0px; } 100% { background-position: 0px 100vh, 20px 100vh; } }
+
+        /* ⚡ 時々ピカッと光る雷光エフェクト */
+        .lightning-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; background: #fff; opacity: 0;
+            animation: flash 8s infinite;
+        }
+        @keyframes flash { 0%, 95%, 98%, 100% { opacity: 0; } 96% { opacity: 0.3; } 97% { opacity: 0; } 99% { opacity: 0.4; } }
+
+        /* 💥 スタンプ押下時のフラッシュ */
+        .impact-flash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; background: #fff; opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+        .impact-flash.active { opacity: 0.8; transition: none; }
+
+        /* === 📱 メインコンテナ（グラスモーフィズム） === */
+        .ticket-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            width: 92%; max-width: 380px; border-radius: 24px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.8);
+            overflow: hidden; text-align: center; 
+            position: relative; margin: 20px auto; z-index: 1;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.9), rgba(77, 208, 225, 0.9));
+            color: #fff; padding: 12px; font-weight: 900; font-size: 1.1rem;
+            border-bottom: 3px solid rgba(0, 131, 143, 0.5); text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .anti-fraud-bar {
+            background: repeating-linear-gradient(45deg, var(--primary), var(--primary) 15px, #80deea 15px, #80deea 30px);
+            background-size: 42px 42px; animation: moveStripes 1s linear infinite;
+            height: 10px; width: 100%; margin-bottom: 15px; opacity: 0.8;
+        }
+
+        .content { padding: 0 20px 24px; }
+
+        /* === 🎫 リアルチケットデザイン === */
+        .ticket-box {
+            background: linear-gradient(135deg, #ffffff, #f0fdfa);
+            border: 3px dashed var(--accent); border-radius: 16px;
+            padding: 25px 15px 15px; margin: 20px 0; position: relative; overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,188,212,0.15), inset 0 0 15px rgba(255,64,129,0.05);
+            animation: bouncePop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* 偽バーコード（リアル感アップ） */
+        .barcode {
+            height: 25px; width: 80%; margin: 15px auto 0; opacity: 0.6;
+            background: repeating-linear-gradient(to right, 
+                #333 0, #333 2px, transparent 2px, transparent 4px, 
+                #333 4px, #333 5px, transparent 5px, transparent 8px,
+                #333 8px, #333 12px, transparent 12px, transparent 14px);
+        }
+
+        .ticket-box::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg); animation: shine 3s infinite; z-index: 1;
+        }
+
+        .ticket-box.used::after {
+            content: 'USED'; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            color: rgba(211, 47, 47, 0.9); font-size: 4.5rem; font-weight: 900;
+            border: 10px solid rgba(211, 47, 47, 0.9); padding: 0px 25px;
+            border-radius: 15px; z-index: 10; font-family: 'Arial Black', sans-serif;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 0 10px rgba(0,0,0,0.2);
+            animation: stampHit 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes stampHit { 
+            0% { transform: translate(-50%, -50%) scale(4) rotate(10deg); opacity: 0; } 
+            50% { transform: translate(-50%, -50%) scale(0.9) rotate(-15deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(-15deg); opacity: 1; }
+        }
+
+        .ticket-label { background: var(--accent); color: #fff; padding: 4px 15px; border-radius: 20px; font-size: 0.95rem; font-weight: 900; position: relative; z-index: 2; display: inline-block; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(255,64,129,0.3); }
+        .promo-main { font-size: 1.6rem; color: #1e3a8a; font-weight: 900; line-height: 1.3; position: relative; z-index: 2; margin: 5px 0; }
+        .promo-sub { font-size: 1.1rem; color: #ffffff; font-weight: 900; background: #00bcd4; padding: 4px 12px; border-radius: 10px; display: inline-block; position: relative; z-index: 2; margin-top: 10px; box-shadow: 0 4px 0 #00838f; }
+
+        /* === 🔘 ボタン（ネオン＆リッチ） === */
+        .btn {
+            background: linear-gradient(135deg, #ff4081, #f50057);
+            color: #fff; border: none; padding: 14px 10px; width: 100%;
+            border-radius: 40px; box-shadow: 0 6px 0 #880e4f;
+            cursor: pointer; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; line-height: 1.2;
+            position: relative; overflow: hidden;
+        }
+        .btn::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .btn:active::after { opacity: 1; }
+        .btn:active { transform: translateY(4px) scale(0.98); box-shadow: 0 2px 0 #880e4f; }
+        .btn-main-text { font-size: 1.3rem; font-weight: 900; margin-top: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        
+        .use-btn-animated { animation: pulse-main 2s infinite; margin-top: 15px;}
+        .btn:disabled { animation: none !important; transform: none !important; background: #9e9e9e !important; box-shadow: 0 6px 0 #616161 !important; color: #e0e0e0; }
+
+        .small-notice { font-size: 0.75rem; color: #d32f2f; font-weight: bold; margin-top: 12px; line-height: 1.4; }
+
+        /* モーダル */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s; }
+        .overlay.show { display: flex; opacity: 1; }
+        .modal { background: #fff; width: 100%; max-width: 340px; border-radius: 24px; padding: 24px; text-align: center; border: 4px solid var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateY(20px) scale(0.95); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .overlay.show .modal { transform: translateY(0) scale(1); }
+        .modal-btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-btn-group .btn { flex: 1; }
+
+        /* 📺 画面制御 */
+        .screen { display: none; }
+        .active-screen { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* ⏳ ローディング画面 */
+        .loader-spinner {
+            width: 50px; height: 50px; border: 5px solid rgba(0, 188, 212, 0.2);
+            border-top-color: #00bcd4; border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 15px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .status-icon { font-size: 4.5rem; display: block; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
+        .normal-text-box { background: rgba(255,255,255,0.6); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.8); }
+        .test-btn { margin-top: 20px; background-color: rgba(0, 188, 212, 0.1); color: #00838f; border: 2px solid #00bcd4; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: bold; width: 100%; transition: 0.2s; }
+        .test-btn:hover { background-color: rgba(0, 188, 212, 0.2); }
+        #weather-debug { margin-top: 15px; font-size: 0.75rem; color: #546e7a; font-weight: bold; background: rgba(0,0,0,0.05); padding: 8px; border-radius: 8px; border: 1px dashed #cfd8dc;}
+    </style>
+</head>
+<body>
+
+    <div class="rain-overlay"></div>
+    <div class="lightning-overlay"></div>
+    <div class="impact-flash" id="impact-flash"></div>
+
+    <div class="ticket-container">
+        <div class="header">🏢 テクモピア 公津の杜</div>
+        
+        <div class="content">
+            
+            <div id="screen-loading" class="screen active-screen" style="padding: 40px 0;">
+                <div class="loader-spinner"></div>
+                <h3 style="color: var(--primary-dark); font-weight: 900;">お天気レーダー確認中...</h3>
+                <p style="font-size: 0.85rem; color: #666; font-weight: bold;">店舗周辺の天候を取得しています📡</p>
+            </div>
+
+            <div id="screen-normal" class="screen" style="padding: 30px 0;">
+                <span class="status-icon">🌤️</span>
+                <h3 style="font-weight:900; color:#1e3a8a;">本日は雨の日ではありません</h3>
+                <p class="normal-text-box" style="font-weight:bold; color:#475569; font-size:0.9rem; line-height: 1.6;">
+                    店舗周辺に雨が降っている時だけ<br><strong>「雨の日限定クーポン」</strong>が<br>自動で出現します！
+                </p>
+                <div id="weather-debug"></div>
+                <button class="test-btn" onclick="forceShowCoupon()">🛠️ テスト表示する</button>
+            </div>
+
+            <div id="screen-coupon" class="screen">
+                <div class="anti-fraud-bar"></div>
+                <div id="ticket" class="ticket-box">
+                    <span class="ticket-label">☔ 雨の日限定</span>
+                    <h2 class="promo-main">クレーンゲーム<br>1回増量！</h2>
+                    <div class="promo-sub">100円で2プレイ</div>
+                    <div class="barcode"></div>
+                </div>
+                <div style="background:rgba(227, 242, 253, 0.8); padding:12px; border-radius:12px; color:#1565c0; font-weight:900; font-size:0.95rem; line-height: 1.4; border: 1px solid #bbdefb; margin-top: 10px;">
+                    【使いかた】<br>遊びたい台を決めてスタッフを呼び、<br>この画面を見せてください。
+                </div>
+                <button id="use-btn" class="btn use-btn-animated" onclick="openModal('confirm-use')">
+                    <span class="btn-main-text">クーポンを使用する</span>
+                </button>
+                <div class="small-notice">注意：必ずスタッフを呼んでから押してください。<br>事前にお客様自身で押すと無効となります。</div>
+            </div>
+
+            <div id="screen-already" class="screen" style="padding: 40px 0;">
+                <span class="status-icon">🌟</span>
+                <h3 style="font-weight:900; color:#1e3a8a;">本日は利用済みです</h3>
+                <p style="font-weight:bold; color:#475569; font-size:0.9rem;">雨の日クーポンの利用は1日1回までです。<br>また遊びに来てね！🧸</p>
+                <button class="test-btn" style="background:#fce4ec; color:#c2185b; border-color: #f48fb1;" onclick="resetTestData()">🛠️ 使用済み状態をリセット</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="confirm-use" class="overlay">
+        <div class="modal">
+            <h3 style="color:var(--primary-dark); font-weight:900; margin-top:0;">クーポンを使用します</h3>
+            <p style="font-weight:bold; line-height:1.5; color:#444;">100円を投入する前に、<br>スタッフにこの画面を見せましたか？</p>
+            <div class="modal-btn-group">
+                <button class="btn" style="padding:12px; font-size:1rem;" onclick="executeUse()"><span class="btn-main-text">はい(使用)</span></button>
+                <button class="btn" style="background:#e0e0e0; color:#333; padding:12px; font-size:1rem; box-shadow:0 4px 0 #9e9e9e;" onclick="closeModal()"><span class="btn-main-text">戻る</span></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = 'fd3058337eec2921c0ba0212a7d86b0e';
+        const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=35.778&lon=140.315&appid=${apiKey}&lang=ja&units=metric`;
+
+        function getToday() { return new Date().toLocaleDateString('ja-JP'); }
+        const usedStorageKey = 'rainy_used_' + getToday();
+
+        window.onload = function() {
+            // 少しだけ意図的にローディングを見せて期待感を高める（1.5秒）
+            setTimeout(() => {
+                if (localStorage.getItem(usedStorageKey) === 'true') {
+                    showScreen('screen-already');
+                    return;
+                }
+
+                fetch(weatherUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        const weather = data.weather[0].main;
+                        const desc = data.weather[0].description;
+                        
+                        const debugEl = document.getElementById('weather-debug');
+                        if(debugEl) debugEl.innerText = `現在のシステム判定: ${weather} (${desc})`;
+                        
+                        if (weather === 'Rain' || weather === 'Drizzle' || weather === 'Thunderstorm') {
+                            showScreen('screen-coupon');
+                        } else {
+                            showScreen('screen-normal');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('天気取得エラー:', error);
+                        showScreen('screen-normal');
+                    });
+            }, 1500);
+        };
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+            document.getElementById(id).classList.add('active-screen');
+        }
+
+        function openModal(id) { 
+            const overlay = document.getElementById(id);
+            if (overlay) { overlay.style.display = 'flex'; setTimeout(() => overlay.classList.add('show'), 10); }
+        }
+        function closeModal() { 
+            document.querySelectorAll('.overlay').forEach(o => { o.classList.remove('show'); setTimeout(() => { o.style.display = 'none'; }, 300); });
+        }
+
+        function executeUse() {
+            closeModal();
+            
+            // 💥 ヒットエフェクト（画面がピカッと光る）
+            const flash = document.getElementById('impact-flash');
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 50);
+
+            // チケットにUSEDスタンプ
+            const ticketEl = document.getElementById('ticket');
+            if (ticketEl) ticketEl.classList.add('used');
+            
+            // ボタンの無効化
+            const useBtn = document.getElementById('use-btn');
+            if (useBtn) {
+                useBtn.classList.remove('use-btn-animated'); useBtn.disabled = true;
+                useBtn.innerHTML = '<span class="btn-main-text">使用済み</span>';
+            }
+            
+            localStorage.setItem(usedStorageKey, 'true');
+            
+            // スタンプの余韻を残して、3.5秒後に画面切り替え
+            setTimeout(() => { showScreen('screen-already'); }, 3500);
+        }
+
+        function forceShowCoupon() { showScreen('screen-coupon'); }
+        function resetTestData() { localStorage.removeItem(usedStorageKey); alert('リセットしました。'); location.reload(); }
+    </script>
+</body>
+</html>
