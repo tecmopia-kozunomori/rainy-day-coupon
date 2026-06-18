@@ -17,13 +17,9 @@
 
         * { box-sizing: border-box; }
         
-        /* 🏙️ 背景画像の設定（いただいたGitHubのGIF画像URLを指定） */
         body {
             font-family: var(--jp-font);
-            background-image: url('https://raw.githubusercontent.com/tecmopia-kozunomori/rainy-day-coupon/refs/heads/main/%E6%AD%A3%E9%9D%A2%E3%81%AB%E5%90%91%E3%81%8B%E3%81%A3%E3%81%A6%E6%AD%A9%E3%81%8F%E3%80%82%E5%A7%8B%E3%81%BE%E3%82%8A%E3%81%A8%E7%B5%82%E3%82%8F%E3%82%8A%E3%81%A7%E3%83%AB%E3%83%BC%E3%83%97%E3%81%95%E3%81%9B%E3%82%8B%E3%80%82%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%83%89%20(1).gif'); 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-color: #141e30; /* 画像読み込み前の保険用背景色 */
             margin: 0; padding: 0; color: var(--text-color);
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; overflow-x: hidden;
@@ -31,11 +27,23 @@
             position: relative;
         }
 
+        /* 🖼️ 背景GIFを強制表示させるための画像設定 */
+        .bg-gif-img {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2; /* 画面の一番奥に配置 */
+            pointer-events: none; /* タップの邪魔にならないようにする */
+        }
+
         /* 🌆 画像の上に敷く薄い暗幕（クーポンを見やすくするため） */
         .bg-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(10, 15, 30, 0.4);
-            pointer-events: none; z-index: 0;
+            pointer-events: none; z-index: -1;
         }
 
         /* ⚡ 時々ピカッと光る雷光エフェクト */
@@ -54,7 +62,7 @@
         }
         .impact-flash.active { opacity: 0.8; transition: none; }
 
-        /* === 📱 メインコンテナ（グラスモーフィズム） === */
+        /* === 📱 メインコンテナ === */
         .ticket-container {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -177,7 +185,8 @@
 </head>
 <body>
 
-    <!-- エフェクトレイヤー -->
+    <img src="https://github.com/tecmopia-kozunomori/rainy-day-coupon/blob/main/%E6%AD%A3%E9%9D%A2%E3%81%AB%E5%90%91%E3%81%8B%E3%81%A3%E3%81%A6%E6%AD%A9%E3%81%8F%E3%80%82%E5%A7%8B%E3%81%BE%E3%82%8A%E3%81%A8%E7%B5%82%E3%82%8F%E3%82%8A%E3%81%A7%E3%83%AB%E3%83%BC%E3%83%97%E3%81%95%E3%81%9B%E3%82%8B%E3%80%82%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%83%89%20(1).gif?raw=true" class="bg-gif-img" alt="雨の日背景">
+
     <div class="bg-overlay"></div>
     <div class="lightning-overlay"></div>
     <div class="impact-flash" id="impact-flash"></div>
@@ -187,14 +196,12 @@
         
         <div class="content">
             
-            <!-- 【画面0】ローディング -->
             <div id="screen-loading" class="screen active-screen" style="padding: 40px 0;">
                 <div class="loader-spinner"></div>
                 <h3 style="color: var(--primary-dark); font-weight: 900; text-shadow: 0 0 10px #fff;">お天気レーダー確認中...</h3>
                 <p style="font-size: 0.85rem; color: #333; font-weight: bold; background: rgba(255,255,255,0.8); padding: 5px; border-radius: 5px;">店舗周辺の天候を取得しています📡</p>
             </div>
 
-            <!-- 【画面1】通常時 -->
             <div id="screen-normal" class="screen" style="padding: 30px 0;">
                 <span class="status-icon">🌤️</span>
                 <h3 style="font-weight:900; color:#1e3a8a; text-shadow: 0 0 10px #fff;">本日は雨の日ではありません</h3>
@@ -205,14 +212,12 @@
                 <button class="test-btn" onclick="forceShowCoupon()">🛠️ テスト表示する</button>
             </div>
 
-            <!-- 【画面2】雨の日クーポン表示 -->
             <div id="screen-coupon" class="screen">
                 <div class="anti-fraud-bar"></div>
                 <div id="ticket" class="ticket-box">
                     <span class="ticket-label">☔ 雨の日限定</span>
                     <h2 class="promo-main">クレーンゲーム<br>1回増量！</h2>
                     <div class="promo-sub">100円で2プレイ</div>
-                    <!-- バーコード -->
                     <div class="barcode"></div>
                 </div>
                 <div style="background:rgba(227, 242, 253, 0.9); padding:12px; border-radius:12px; color:#1565c0; font-weight:900; font-size:0.95rem; line-height: 1.4; border: 1px solid #bbdefb; margin-top: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
@@ -224,7 +229,6 @@
                 <div class="small-notice">注意：必ずスタッフを呼んでから押してください。<br>事前にお客様自身で押すと無効となります。</div>
             </div>
 
-            <!-- 【画面3】使用済み -->
             <div id="screen-already" class="screen" style="padding: 40px 0;">
                 <span class="status-icon">🌟</span>
                 <h3 style="font-weight:900; color:#1e3a8a; text-shadow: 0 0 10px #fff;">本日は利用済みです</h3>
@@ -235,7 +239,6 @@
         </div>
     </div>
 
-    <!-- モーダル：使用確認 -->
     <div id="confirm-use" class="overlay">
         <div class="modal">
             <h3 style="color:var(--primary-dark); font-weight:900; margin-top:0;">クーポンを使用します</h3>
@@ -270,7 +273,6 @@
                         const debugEl = document.getElementById('weather-debug');
                         if(debugEl) debugEl.innerText = `現在のシステム判定: ${weather} (${desc})`;
                         
-                        // ★ 'Clouds' を入れて動作テストしたい場合はここに追記します
                         if (weather === 'Rain' || weather === 'Drizzle' || weather === 'Thunderstorm') {
                             showScreen('screen-coupon');
                         } else {
