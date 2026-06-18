@@ -17,10 +17,13 @@
 
         * { box-sizing: border-box; }
         
-        /* 🌧️ 奥行きのある雨空の背景 */
+        /* 🏙️ 背景画像の設定（GitHubの直リンクを使用） */
         body {
             font-family: var(--jp-font);
-            background: linear-gradient(to bottom, #141e30, #243b55);
+            background-image: url('https://github.com/tecmopia-kozunomori/rainy-day-coupon/blob/main/%E6%AD%A3%E9%9D%A2%E3%81%AB%E5%90%91%E3%81%8B%E3%81%A3%E3%81%A6%E6%AD%A9%E3%81%8F%E3%80%82%E5%A7%8B%E3%81%BE%E3%82%8A%E3%81%A8%E7%B5%82%E3%82%8F%E3%82%8A%E3%81%A7%E3%83%AB%E3%83%BC%E3%83%97%E3%81%95%E3%81%9B%E3%82%8B%E3%80%82%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%83%89%20(1).gif?raw=true'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             margin: 0; padding: 0; color: var(--text-color);
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; overflow-x: hidden;
@@ -28,26 +31,20 @@
             position: relative;
         }
 
-        /* ☔ 降り注ぐ雨 */
-        .rain-overlay {
+        /* 🌆 画像の上に敷く薄い暗幕（クーポンを見やすくするため） */
+        .bg-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 15, 30, 0.4); /* うっすら暗くする */
             pointer-events: none; z-index: 0;
-            background-image: 
-                linear-gradient(to bottom, transparent 80%, rgba(255, 255, 255, 0.4) 100%),
-                linear-gradient(to bottom, transparent 80%, rgba(255, 255, 255, 0.2) 100%);
-            background-size: 2px 80px, 4px 120px;
-            background-position: 0 0, 20px 0;
-            animation: rainFall 0.7s linear infinite;
         }
-        @keyframes rainFall { 0% { background-position: 0px 0px, 20px 0px; } 100% { background-position: 0px 100vh, 20px 100vh; } }
 
         /* ⚡ 時々ピカッと光る雷光エフェクト */
         .lightning-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 0; background: #fff; opacity: 0;
-            animation: flash 8s infinite;
+            animation: flash 10s infinite;
         }
-        @keyframes flash { 0%, 95%, 98%, 100% { opacity: 0; } 96% { opacity: 0.3; } 97% { opacity: 0; } 99% { opacity: 0.4; } }
+        @keyframes flash { 0%, 95%, 98%, 100% { opacity: 0; } 96% { opacity: 0.2; } 97% { opacity: 0; } 99% { opacity: 0.3; } }
 
         /* 💥 スタンプ押下時のフラッシュ */
         .impact-flash {
@@ -57,20 +54,20 @@
         }
         .impact-flash.active { opacity: 0.8; transition: none; }
 
-        /* === 📱 メインコンテナ（グラスモーフィズム） === */
+        /* === 📱 メインコンテナ（透け感を少し強くしました） === */
         .ticket-container {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.75); /* 背景キャラが透けるように調整 */
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); /* ぼかしを少し弱く */
             width: 92%; max-width: 380px; border-radius: 24px; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.8);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.5);
             overflow: hidden; text-align: center; 
             position: relative; margin: 20px auto; z-index: 1;
         }
 
         .header {
-            background: linear-gradient(135deg, rgba(0, 188, 212, 0.9), rgba(77, 208, 225, 0.9));
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.85), rgba(77, 208, 225, 0.85));
             color: #fff; padding: 12px; font-weight: 900; font-size: 1.1rem;
-            border-bottom: 3px solid rgba(0, 131, 143, 0.5); text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border-bottom: 3px solid rgba(0, 131, 143, 0.4); text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .anti-fraud-bar {
@@ -86,11 +83,10 @@
             background: linear-gradient(135deg, #ffffff, #f0fdfa);
             border: 3px dashed var(--accent); border-radius: 16px;
             padding: 25px 15px 15px; margin: 20px 0; position: relative; overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,188,212,0.15), inset 0 0 15px rgba(255,64,129,0.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1), inset 0 0 15px rgba(255,64,129,0.05);
             animation: bouncePop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* 偽バーコード（リアル感アップ） */
         .barcode {
             height: 25px; width: 80%; margin: 15px auto 0; opacity: 0.6;
             background: repeating-linear-gradient(to right, 
@@ -125,7 +121,7 @@
         .promo-main { font-size: 1.6rem; color: #1e3a8a; font-weight: 900; line-height: 1.3; position: relative; z-index: 2; margin: 5px 0; }
         .promo-sub { font-size: 1.1rem; color: #ffffff; font-weight: 900; background: #00bcd4; padding: 4px 12px; border-radius: 10px; display: inline-block; position: relative; z-index: 2; margin-top: 10px; box-shadow: 0 4px 0 #00838f; }
 
-        /* === 🔘 ボタン（ネオン＆リッチ） === */
+        /* === 🔘 ボタン === */
         .btn {
             background: linear-gradient(135deg, #ff4081, #f50057);
             color: #fff; border: none; padding: 14px 10px; width: 100%;
@@ -145,7 +141,7 @@
         .use-btn-animated { animation: pulse-main 2s infinite; margin-top: 15px;}
         .btn:disabled { animation: none !important; transform: none !important; background: #9e9e9e !important; box-shadow: 0 6px 0 #616161 !important; color: #e0e0e0; }
 
-        .small-notice { font-size: 0.75rem; color: #d32f2f; font-weight: bold; margin-top: 12px; line-height: 1.4; }
+        .small-notice { font-size: 0.75rem; color: #d32f2f; font-weight: bold; margin-top: 12px; line-height: 1.4; background: rgba(255,255,255,0.8); padding: 5px; border-radius: 8px;}
 
         /* モーダル */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s; }
@@ -169,15 +165,16 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .status-icon { font-size: 4.5rem; display: block; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
-        .normal-text-box { background: rgba(255,255,255,0.6); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.8); }
-        .test-btn { margin-top: 20px; background-color: rgba(0, 188, 212, 0.1); color: #00838f; border: 2px solid #00bcd4; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: bold; width: 100%; transition: 0.2s; }
-        .test-btn:hover { background-color: rgba(0, 188, 212, 0.2); }
-        #weather-debug { margin-top: 15px; font-size: 0.75rem; color: #546e7a; font-weight: bold; background: rgba(0,0,0,0.05); padding: 8px; border-radius: 8px; border: 1px dashed #cfd8dc;}
+        .normal-text-box { background: rgba(255,255,255,0.85); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .test-btn { margin-top: 20px; background-color: rgba(255, 255, 255, 0.9); color: #00838f; border: 2px solid #00bcd4; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: bold; width: 100%; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        .test-btn:hover { background-color: #fff; }
+        #weather-debug { margin-top: 15px; font-size: 0.75rem; color: #546e7a; font-weight: bold; background: rgba(255,255,255,0.7); padding: 8px; border-radius: 8px;}
     </style>
 </head>
 <body>
 
-    <div class="rain-overlay"></div>
+    <!-- エフェクトレイヤー -->
+    <div class="bg-overlay"></div>
     <div class="lightning-overlay"></div>
     <div class="impact-flash" id="impact-flash"></div>
 
@@ -186,15 +183,17 @@
         
         <div class="content">
             
+            <!-- 【画面0】ローディング -->
             <div id="screen-loading" class="screen active-screen" style="padding: 40px 0;">
                 <div class="loader-spinner"></div>
-                <h3 style="color: var(--primary-dark); font-weight: 900;">お天気レーダー確認中...</h3>
-                <p style="font-size: 0.85rem; color: #666; font-weight: bold;">店舗周辺の天候を取得しています📡</p>
+                <h3 style="color: var(--primary-dark); font-weight: 900; text-shadow: 0 0 10px #fff;">お天気レーダー確認中...</h3>
+                <p style="font-size: 0.85rem; color: #333; font-weight: bold; background: rgba(255,255,255,0.8); padding: 5px; border-radius: 5px;">店舗周辺の天候を取得しています📡</p>
             </div>
 
+            <!-- 【画面1】通常時 -->
             <div id="screen-normal" class="screen" style="padding: 30px 0;">
                 <span class="status-icon">🌤️</span>
-                <h3 style="font-weight:900; color:#1e3a8a;">本日は雨の日ではありません</h3>
+                <h3 style="font-weight:900; color:#1e3a8a; text-shadow: 0 0 10px #fff;">本日は雨の日ではありません</h3>
                 <p class="normal-text-box" style="font-weight:bold; color:#475569; font-size:0.9rem; line-height: 1.6;">
                     店舗周辺に雨が降っている時だけ<br><strong>「雨の日限定クーポン」</strong>が<br>自動で出現します！
                 </p>
@@ -202,15 +201,17 @@
                 <button class="test-btn" onclick="forceShowCoupon()">🛠️ テスト表示する</button>
             </div>
 
+            <!-- 【画面2】雨の日クーポン表示 -->
             <div id="screen-coupon" class="screen">
                 <div class="anti-fraud-bar"></div>
                 <div id="ticket" class="ticket-box">
                     <span class="ticket-label">☔ 雨の日限定</span>
                     <h2 class="promo-main">クレーンゲーム<br>1回増量！</h2>
                     <div class="promo-sub">100円で2プレイ</div>
+                    <!-- バーコード -->
                     <div class="barcode"></div>
                 </div>
-                <div style="background:rgba(227, 242, 253, 0.8); padding:12px; border-radius:12px; color:#1565c0; font-weight:900; font-size:0.95rem; line-height: 1.4; border: 1px solid #bbdefb; margin-top: 10px;">
+                <div style="background:rgba(227, 242, 253, 0.9); padding:12px; border-radius:12px; color:#1565c0; font-weight:900; font-size:0.95rem; line-height: 1.4; border: 1px solid #bbdefb; margin-top: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
                     【使いかた】<br>遊びたい台を決めてスタッフを呼び、<br>この画面を見せてください。
                 </div>
                 <button id="use-btn" class="btn use-btn-animated" onclick="openModal('confirm-use')">
@@ -219,16 +220,18 @@
                 <div class="small-notice">注意：必ずスタッフを呼んでから押してください。<br>事前にお客様自身で押すと無効となります。</div>
             </div>
 
+            <!-- 【画面3】使用済み -->
             <div id="screen-already" class="screen" style="padding: 40px 0;">
                 <span class="status-icon">🌟</span>
-                <h3 style="font-weight:900; color:#1e3a8a;">本日は利用済みです</h3>
-                <p style="font-weight:bold; color:#475569; font-size:0.9rem;">雨の日クーポンの利用は1日1回までです。<br>また遊びに来てね！🧸</p>
+                <h3 style="font-weight:900; color:#1e3a8a; text-shadow: 0 0 10px #fff;">本日は利用済みです</h3>
+                <p class="normal-text-box" style="font-weight:bold; color:#475569; font-size:0.9rem; margin-bottom: 20px;">雨の日クーポンの利用は1日1回までです。<br>また遊びに来てね！🧸</p>
                 <button class="test-btn" style="background:#fce4ec; color:#c2185b; border-color: #f48fb1;" onclick="resetTestData()">🛠️ 使用済み状態をリセット</button>
             </div>
 
         </div>
     </div>
 
+    <!-- モーダル：使用確認 -->
     <div id="confirm-use" class="overlay">
         <div class="modal">
             <h3 style="color:var(--primary-dark); font-weight:900; margin-top:0;">クーポンを使用します</h3>
@@ -248,7 +251,6 @@
         const usedStorageKey = 'rainy_used_' + getToday();
 
         window.onload = function() {
-            // 少しだけ意図的にローディングを見せて期待感を高める（1.5秒）
             setTimeout(() => {
                 if (localStorage.getItem(usedStorageKey) === 'true') {
                     showScreen('screen-already');
@@ -264,6 +266,7 @@
                         const debugEl = document.getElementById('weather-debug');
                         if(debugEl) debugEl.innerText = `現在のシステム判定: ${weather} (${desc})`;
                         
+                        // ★ 'Clouds' を入れて動作テストしたい場合はここに追記します
                         if (weather === 'Rain' || weather === 'Drizzle' || weather === 'Thunderstorm') {
                             showScreen('screen-coupon');
                         } else {
@@ -293,16 +296,13 @@
         function executeUse() {
             closeModal();
             
-            // 💥 ヒットエフェクト（画面がピカッと光る）
             const flash = document.getElementById('impact-flash');
             flash.classList.add('active');
             setTimeout(() => flash.classList.remove('active'), 50);
 
-            // チケットにUSEDスタンプ
             const ticketEl = document.getElementById('ticket');
             if (ticketEl) ticketEl.classList.add('used');
             
-            // ボタンの無効化
             const useBtn = document.getElementById('use-btn');
             if (useBtn) {
                 useBtn.classList.remove('use-btn-animated'); useBtn.disabled = true;
@@ -311,7 +311,6 @@
             
             localStorage.setItem(usedStorageKey, 'true');
             
-            // スタンプの余韻を残して、3.5秒後に画面切り替え
             setTimeout(() => { showScreen('screen-already'); }, 3500);
         }
 
