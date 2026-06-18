@@ -17,7 +17,7 @@
 
         * { box-sizing: border-box; }
         
-        /* 🏙️ 背景画像の設定（最適なRawリンクを使用） */
+        /* 🏙️ 背景画像の設定（いただいたGitHubのGIF画像URLを指定） */
         body {
             font-family: var(--jp-font);
             background-image: url('https://raw.githubusercontent.com/tecmopia-kozunomori/rainy-day-coupon/refs/heads/main/%E6%AD%A3%E9%9D%A2%E3%81%AB%E5%90%91%E3%81%8B%E3%81%A3%E3%81%A6%E6%AD%A9%E3%81%8F%E3%80%82%E5%A7%8B%E3%81%BE%E3%82%8A%E3%81%A8%E7%B5%82%E3%82%8F%E3%82%8A%E3%81%A7%E3%83%AB%E3%83%BC%E3%83%97%E3%81%95%E3%81%9B%E3%82%8B%E3%80%82%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%83%89%20(1).gif'); 
@@ -34,7 +34,7 @@
         /* 🌆 画像の上に敷く薄い暗幕（クーポンを見やすくするため） */
         .bg-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 15, 30, 0.4); /* うっすら暗くする */
+            background: rgba(10, 15, 30, 0.4);
             pointer-events: none; z-index: 0;
         }
 
@@ -54,10 +54,10 @@
         }
         .impact-flash.active { opacity: 0.8; transition: none; }
 
-        /* === 📱 メインコンテナ（透け感を少し強くしました） === */
+        /* === 📱 メインコンテナ（グラスモーフィズム） === */
         .ticket-container {
-            background: rgba(255, 255, 255, 0.75); /* 背景キャラが透けるように調整 */
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); /* ぼかしを少し弱く */
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             width: 92%; max-width: 380px; border-radius: 24px; 
             box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.5);
             overflow: hidden; text-align: center; 
@@ -75,6 +75,7 @@
             background-size: 42px 42px; animation: moveStripes 1s linear infinite;
             height: 10px; width: 100%; margin-bottom: 15px; opacity: 0.8;
         }
+        @keyframes moveStripes { from { background-position: 0 0; } to { background-position: 42px 0; } }
 
         .content { padding: 0 20px 24px; }
 
@@ -86,6 +87,7 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.1), inset 0 0 15px rgba(255,64,129,0.05);
             animation: bouncePop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        @keyframes bouncePop { 0% { transform: scale(0.8); opacity: 0; } 70% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
 
         .barcode {
             height: 25px; width: 80%; margin: 15px auto 0; opacity: 0.6;
@@ -100,6 +102,7 @@
             background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%);
             transform: skewX(-25deg); animation: shine 3s infinite; z-index: 1;
         }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
 
         .ticket-box.used::after {
             content: 'USED'; position: absolute; top: 50%; left: 50%;
@@ -138,6 +141,7 @@
         .btn:active { transform: translateY(4px) scale(0.98); box-shadow: 0 2px 0 #880e4f; }
         .btn-main-text { font-size: 1.3rem; font-weight: 900; margin-top: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         
+        @keyframes pulse-main { 0% { transform: scale(1); box-shadow: 0 6px 0 #880e4f; } 50% { transform: scale(1.02); box-shadow: 0 10px 25px rgba(255, 64, 129, 0.6), 0 6px 0 #880e4f; } 100% { transform: scale(1); box-shadow: 0 6px 0 #880e4f; } }
         .use-btn-animated { animation: pulse-main 2s infinite; margin-top: 15px;}
         .btn:disabled { animation: none !important; transform: none !important; background: #9e9e9e !important; box-shadow: 0 6px 0 #616161 !important; color: #e0e0e0; }
 
